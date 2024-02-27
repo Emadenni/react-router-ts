@@ -3,7 +3,7 @@ import { Props } from "../components/Card/Card";
 import { data, imageString } from "../components/constants/constants";
 import "./product.scss";
 import { useState } from "react";
-import { useInternalCountStore } from "../store/productCount";
+
 import { useCountStore } from "../store/count";
 import { useCartStore } from "../store/cartStore";
 import { CartProduct } from "../store/cartStore";
@@ -17,7 +17,7 @@ const Product = () => {
   const [show, setShow] = useState(false);
   /*   const [count, setCount] = useState<number>(0); */
   const { increment } = useCountStore();
-  const { internalIncrement } = useInternalCountStore();
+
   const { addToCart } = useCartStore();
 
   const pokemon = data.find((pokemon) => pokemon.id === id);
@@ -34,7 +34,6 @@ const Product = () => {
 
   const handleAddToCart = () => {
     addToCart(pokemon as CartProduct);
-    
   };
   console.log("cart array", useCartStore.getState().cart);
   return (
@@ -50,7 +49,6 @@ const Product = () => {
             <div className="add-to-cart">
               <button
                 onClick={() => {
-                  internalIncrement(),
                   increment();
                   handleAddToCart();
                 }}

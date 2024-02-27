@@ -12,6 +12,7 @@ const Products = (_props: Props) => {
       price={pokemon.price}
       desc={pokemon.desc}
       buttonText={pokemon.buttonText}
+ 
     />
   ));
   return (

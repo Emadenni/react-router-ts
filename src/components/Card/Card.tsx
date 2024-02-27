@@ -7,6 +7,7 @@ export type Props = {
   price: string;
   desc: string;
   buttonText: string;
+ 
 };
 
 const Card = ({ id, name, desc, buttonText }: Props) => {

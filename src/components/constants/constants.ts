@@ -10,6 +10,7 @@ export const data = [
     price: "200$",
     desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda vero eius libero facilis exercitationem labore iure error porro dolores, omnis, consequatur numquam repudiandae adipisci necessitatibus tempore, aut suscipit temporibus illum.",
     buttonText: "check player",
+
   },
   {
     id: "2",

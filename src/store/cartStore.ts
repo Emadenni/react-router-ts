@@ -5,7 +5,7 @@ export interface CartProduct {
   name: string;
   price: string;
   desc: string;
-  buttonText: string;
+  quantity?: number | undefined;
 }
 
 interface CartState {
@@ -18,9 +18,22 @@ export const useCartStore = create<CartState>((set) => ({
 
   addToCart: (product) => {
     set((state) => {
-      const updatedCart = [...state.cart, product];
-      sessionStorage.setItem("cart", JSON.stringify(updatedCart));
-      return { cart: updatedCart };
+      const existingProductIndex = state.cart.findIndex((p) => p.id === product.id);
+      if (existingProductIndex !== -1) {
+        // If the product already exists in the cart, update its quantity
+        const updatedCart = [...state.cart];
+        updatedCart[existingProductIndex] = {
+          ...updatedCart[existingProductIndex],
+          quantity: (updatedCart[existingProductIndex].quantity ?? 0) + 1,  // Increase quantity
+        };
+        sessionStorage.setItem("cart", JSON.stringify(updatedCart));
+        return { cart: updatedCart };
+      } else {
+        // If the product is not in the cart, add it
+        const updatedCart = [...state.cart, { ...product, quantity: 1 }];
+        sessionStorage.setItem("cart", JSON.stringify(updatedCart));
+        return { cart: updatedCart };
+      }
     });
   },
 }));

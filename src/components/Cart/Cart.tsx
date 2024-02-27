@@ -1,12 +1,26 @@
+import { useState } from "react";
 import { CartProduct, useCartStore } from "../../store/cartStore";
 import { useCountStore } from "../../store/count";
-import { useInternalCountStore } from "../../store/productCount";
+
 import './cart.scss'
 
 const Cart = () => {
   const { cart } = useCartStore();
   const { increment, decrement } = useCountStore();
-  const { internalIncrement, internalDecrement, internalCount } = useInternalCountStore();
+
+  const [quantity, setQuantity] = useState(1);
+  const handleDecrement = () => {
+    if (quantity && quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
+
+
+  const handleIncrement = () => {
+    setQuantity(quantity + 1);
+  };
+
+
 
   console.log(cart);
 
@@ -23,16 +37,16 @@ const Cart = () => {
             <button
               onClick={() => {
                 decrement();
-                internalDecrement();
+                handleDecrement()
               }}
             >
               -
             </button>
-            <p>{internalCount}</p>
+            <p>Quantity: {quantity ?? 1}</p>
             <button
               onClick={() => {
                 increment();
-                internalIncrement();
+               handleIncrement()
               }}
             >
               +
