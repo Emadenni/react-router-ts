@@ -1,15 +1,20 @@
 .product-wrapper {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
   margin: 0 auto;
-  gap: 3rem;
   width: 100%;
   max-width: 80rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-self: center;
 
   &__product-info {
     display: flex;
     flex-direction: column;
     gap: 2.4rem;
+    justify-content: center;
+    text-align: center;
+    background-color: rgb(161, 203, 203, 0.5);
+    padding: 5px;
 
     h4 {
       font-weight: 600;
@@ -30,11 +35,12 @@
       font-weight: 700;
       padding: 1rem 0rem;
       cursor: pointer;
+      padding: 10px;
     }
 
     .add-to-cart {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      margin: auto;
+      display: flex;
       align-items: center;
       justify-items: center;
 

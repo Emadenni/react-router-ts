@@ -37,3 +37,19 @@
     }
   }
 }
+
+button {
+  cursor: pointer;
+
+  &:hover {
+    background-color: yellow;
+    scale: 1.1;
+  }
+}
+
+
+
+
+.empty_cart-button {
+  padding: 6px;
+}

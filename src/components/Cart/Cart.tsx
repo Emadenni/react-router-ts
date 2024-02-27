@@ -1,58 +1,45 @@
-import { useState } from "react";
 import { CartProduct, useCartStore } from "../../store/cartStore";
 import { useCountStore } from "../../store/count";
 
-import './cart.scss'
+import "./cart.scss";
 
 const Cart = () => {
-  const { cart } = useCartStore();
-  const { increment, decrement } = useCountStore();
+  const { cart, updateQuantity, removeProduct, emptyCart } = useCartStore();
+  const { increment, decrement, resetCounts } = useCountStore();
 
-  const [quantity, setQuantity] = useState(1);
-  const handleDecrement = () => {
-    if (quantity && quantity > 1) {
-      setQuantity(quantity - 1);
-    }
+  const handleDecrement = (productId: string) => {
+    decrement();
+    updateQuantity(productId, -1);
   };
 
-
-  const handleIncrement = () => {
-    setQuantity(quantity + 1);
+  const handleIncrement = (productId: string) => {
+    increment();
+    updateQuantity(productId, 1);
   };
 
-
-
-  console.log(cart);
+  const handleEmptyCart = () => {
+    emptyCart()
+  }
+  
 
   return (
     <div className="cart-wrapper">
+{cart.length > 0 && <button onClick={() => { handleEmptyCart(); resetCounts(); }} className="empty_cart-button">Empty Cart</button>}
+
+
       <h2>Cart</h2>
+      
       <ul className="cart-list">
-        {cart.map((pokemon: CartProduct) => (
-          <li key={pokemon.id}>
+          {cart.map((pokemon: CartProduct) => (
+            <li key={pokemon.id}>
             <h3>{pokemon.name}</h3>
             <p>Price: {pokemon.price}</p>
-          
 
-            <button
-              onClick={() => {
-                decrement();
-                handleDecrement()
-              }}
-            >
-              -
-            </button>
-            <p>Quantity: {quantity ?? 1}</p>
-            <button
-              onClick={() => {
-                increment();
-               handleIncrement()
-              }}
-            >
-              +
-            </button>
+            <button onClick={() => (pokemon.quantity > 1 ? handleDecrement(pokemon.id) : null)}>-</button>
 
-            <button>Remove</button>
+            <p>Quantity: {pokemon.quantity}</p>
+            <button onClick={() => handleIncrement(pokemon.id)}>+</button>
+            <button onClick={() => removeProduct(pokemon.id)}>Remove</button>
           </li>
         ))}
       </ul>
