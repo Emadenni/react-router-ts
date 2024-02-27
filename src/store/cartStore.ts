@@ -1,44 +1,37 @@
 import { create } from "zustand";
-import { useCountStore, getCountFromSessionStorage } from "./count";
 
 export interface CartProduct {
   id: string;
   name: string;
-  price: string;
+  price: number;
   desc: string;
   buttonText: string;
-  quantity: number; // Aggiungi quantity come parte di CartProduct
+  quantity: number;
 }
 
 interface CartState {
   cart: CartProduct[];
-  count:number,
+  total: number;
   addToCart: (product: CartProduct) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  updateQuantity: (productId: string, quantityDelta: number) => void;
   removeProduct: (productId: string) => void;
-  emptyCart:() => void;
+  emptyCart: () => void;
 }
 
 export const useCartStore = create<CartState>((set) => ({
-  cart: sessionStorage.getItem("cart") ? JSON.parse(sessionStorage.getItem("cart")!) : [],
-  count: getCountFromSessionStorage(),
+  cart: [],
+  total: 0,
 
   addToCart: (product) => {
     set((state) => {
-      const existingProductIndex = state.cart.findIndex((p) => p.id === product.id);
-      if (existingProductIndex !== -1) {
-        const updatedCart = [...state.cart];
-        updatedCart[existingProductIndex] = {
-          ...updatedCart[existingProductIndex],
-          quantity: updatedCart[existingProductIndex].quantity + 1,
-        };
-        sessionStorage.setItem("cart", JSON.stringify(updatedCart));
-        return { cart: updatedCart };
+      const existingProduct = state.cart.find((p) => p.id === product.id);
+      if (existingProduct) {
+        existingProduct.quantity += 1;
       } else {
-        const updatedCart = [...state.cart, { ...product, quantity: 1 }];
-        sessionStorage.setItem("cart", JSON.stringify(updatedCart));
-        return { cart: updatedCart };
+        product.quantity = 1;
+        state.cart.push(product);
       }
+      return { cart: [...state.cart], total: calculateTotalPrice([...state.cart]) };
     });
   },
 
@@ -46,37 +39,30 @@ export const useCartStore = create<CartState>((set) => ({
     set((state) => {
       const updatedCart = state.cart.map((item) => {
         if (item.id === productId) {
-          return { ...item, quantity: item.quantity + quantityDelta };
+          item.quantity += quantityDelta;
         }
         return item;
       });
-      sessionStorage.setItem("cart", JSON.stringify(updatedCart));
-      return { cart: updatedCart };
+      return { cart: updatedCart, total: calculateTotalPrice(updatedCart) };
     });
   },
 
-  removeProduct: (productId: string) => {
+  removeProduct: (productId) => {
     set((state) => {
       const updatedCart = state.cart.filter((item) => item.id !== productId);
-      sessionStorage.setItem("cart", JSON.stringify(updatedCart));
-
-      const removedProduct = state.cart.find((item) => item.id === productId);
-      if (removedProduct) {
-        const { quantity } = removedProduct;
-        const { decrement } = useCountStore.getState(); 
-        for (let i = 0; i < quantity; i++) {
-          decrement(); 
-        }
-      }
-      return { cart: updatedCart };
+      return { cart: updatedCart, total: calculateTotalPrice(updatedCart) };
     });
   },
+
   emptyCart: () => {
 
     sessionStorage.removeItem("cart"); 
-   
+
     set({ cart: []});
-    
+
   }
 }));
 
+const calculateTotalPrice = (cart: CartProduct[]) => {
+  return cart.reduce((total, product) => total + product.price * product.quantity, 0);
+};

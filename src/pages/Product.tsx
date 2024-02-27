@@ -33,7 +33,7 @@ const Product = () => {
   };
 
   const handleAddToCart = () => {
-    addToCart(pokemon as CartProduct);
+    addToCart(pokemon as unknown as CartProduct);
   };
   console.log("cart array", useCartStore.getState().cart);
   return (
