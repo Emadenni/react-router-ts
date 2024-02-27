@@ -4,11 +4,12 @@ import "./products.scss";
 
 type Props = {};
 
-const Products = (props: Props) => {
+const Products = (_props: Props) => {
   const card = data.map((pokemon) => (
     <Card
       id={pokemon.id}
       name={pokemon.name}
+      price={pokemon.price}
       desc={pokemon.desc}
       buttonText={pokemon.buttonText}
     />

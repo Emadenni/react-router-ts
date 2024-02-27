@@ -3,7 +3,10 @@ import { Props } from "../components/Card/Card";
 import { data, imageString } from "../components/constants/constants";
 import "./product.scss";
 import { useState } from "react";
+import { useInternalCountStore } from "../store/productCount";
 import { useCountStore } from "../store/count";
+import { useCartStore } from "../store/cartStore";
+import { CartProduct } from "../store/cartStore";
 
 //Efter att ett villkor är mött, ska vi rendera produktinformationen.
 
@@ -13,16 +16,27 @@ const Product = () => {
   const { id } = useParams();
   const [show, setShow] = useState(false);
   /*   const [count, setCount] = useState<number>(0); */
-  const { count, decrement, increment } = useCountStore();
+  const { increment } = useCountStore();
+  const { internalIncrement } = useInternalCountStore();
+  const { addToCart } = useCartStore();
 
   const pokemon = data.find((pokemon) => pokemon.id === id);
 
-  const { desc, name, buttonText } = pokemon as Props;
+  if (!pokemon) {
+    <div>Pokemon not found</div>;
+  }
+
+  const { desc, name } = pokemon as Props;
 
   const handleClick = () => {
     setShow((prevValue) => !prevValue);
   };
 
+  const handleAddToCart = () => {
+    addToCart(pokemon as CartProduct);
+    
+  };
+  console.log("cart array", useCartStore.getState().cart);
   return (
     <section className="product-wrapper">
       <picture>
@@ -34,15 +48,19 @@ const Product = () => {
             <h4>{name}</h4>
             <p>{desc}</p>
             <div className="add-to-cart">
-              <button disabled={count < 1} onClick={decrement}>
-                -
+              <button
+                onClick={() => {
+                  internalIncrement(),
+                  increment();
+                  handleAddToCart();
+                }}
+              >
+                Add To cart
               </button>
-              <p>{count}</p>
-              <button onClick={increment}>+</button>
             </div>
           </>
         )}
-        <button onClick={handleClick}>{buttonText}</button>
+        <button onClick={handleClick}>{show ? <span>See Less</span> : <span>See More</span>}</button>
       </article>
     </section>
   );

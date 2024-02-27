@@ -4,6 +4,7 @@ import "./card.scss";
 export type Props = {
   id: number | string;
   name: string;
+  price: string;
   desc: string;
   buttonText: string;
 };
